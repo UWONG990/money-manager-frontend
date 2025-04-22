@@ -176,16 +176,26 @@
             }
 
             try {
-                const res = await fetch(`https://api.exchangerate.host/convert?from=IDR&to=${to}&amount=${amount}`);
-                const data = await res.json();
+                const response = await fetch(`https://api.exchangerate.host/convert?from=IDR&to=${to}&amount=${amount}`);
+                const data = await response.json();
 
-                document.getElementById('conversion-result').innerText = 
-                    `Rp${amount} = ${data.result.toFixed(2)} ${to}`;
+                console.log("Currency conversion response:", data); // Debug: see full response
+
+                if (!data || typeof data.result !== 'number') {
+                    alert("Invalid conversion data received.");
+                    return;
+                }
+
+                const convertedAmount = data.result.toFixed(2);
+
+                document.getElementById('conversion-result').innerText =
+                    `Rp${Number(amount).toLocaleString()} = ${convertedAmount} ${to}`;
             } catch (error) {
+                console.error("Conversion fetch error:", error);
                 alert("Failed to fetch conversion rate.");
-                console.error(error);
             }
-    }
+        }
+
     </script>
 </body>
 </html>
