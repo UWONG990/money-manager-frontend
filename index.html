@@ -25,7 +25,7 @@
             <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded">Login</button>
         </form>
 
-        <p class="text-center text-sm mt-4">Don't have an account? <a href="/register.html" class="text-blue-500">Register</a></p>
+        <p class="text-center text-sm mt-4">Don't have an account? <a href="money-manager-frontend/register.html" class="text-blue-500">Register</a></p>
     </div>
 
     <script>
@@ -46,7 +46,7 @@
 if (response.ok) {
     const data = await response.json();
     localStorage.setItem('token', data.token);  // Store token
-    window.location.href = '/dashboard.html';  // Redirect to dashboard
+    window.location.href = 'money-manager-frontend/dashboard.html';  // Redirect to dashboard
 } else {
     alert('Login failed. Please check your credentials.');
 }
