@@ -48,14 +48,14 @@
         // Define the logout function
         function logout() {
             localStorage.removeItem('token');  // Remove token from localStorage
-            window.location.href = '/login.html';  // Redirect to login page
+            window.location.href = '/index.html';  // Redirect to login page
         }
 
         // Function to fetch dashboard data (wallet balance)
         async function fetchDashboardData() {
             const token = localStorage.getItem('token');
             if (!token) {
-                window.location.href = '/login.html';  // Redirect to login if no token
+                window.location.href = '/index.html';  // Redirect to login if no token
                 return;
             }
 
