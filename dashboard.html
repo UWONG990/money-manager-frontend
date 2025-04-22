@@ -167,35 +167,35 @@
         }
 
         async function convertCurrency() {
-            const amount = document.getElementById('convert-amount').value;
+            const rawAmount = document.getElementById('convert-amount').value;
             const to = document.getElementById('convert-to').value;
+            const amount = parseFloat(rawAmount);
 
-            if (!amount || isNaN(amount)) {
-                alert('Please enter a valid amount in IDR.');
+            if (isNaN(amount)) {
+                alert('Please enter a valid number for amount.');
                 return;
             }
 
             try {
-                const response = await fetch(`https://api.exchangerate.host/convert?from=IDR&to=${to}&amount=${amount}`);
+                const url = `https://api.exchangerate.host/convert?from=IDR&to=${to}&amount=${amount}`;
+                const response = await fetch(url);
                 const data = await response.json();
 
-                console.log("Currency conversion response:", data); // Debug: see full response
+                console.log("Full API response:", data); // <-- Key for debugging
 
                 if (!data || typeof data.result !== 'number') {
                     alert("Invalid conversion data received.");
                     return;
                 }
 
-                const convertedAmount = data.result.toFixed(2);
-
+                const converted = data.result.toFixed(2);
                 document.getElementById('conversion-result').innerText =
-                    `Rp${Number(amount).toLocaleString()} = ${convertedAmount} ${to}`;
-            } catch (error) {
-                console.error("Conversion fetch error:", error);
-                alert("Failed to fetch conversion rate.");
+                    `Rp${amount.toLocaleString()} = ${converted} ${to}`;
+            } catch (err) {
+                console.error("Fetch error:", err);
+                alert("Conversion failed.");
             }
         }
-
     </script>
 </body>
 </html>
