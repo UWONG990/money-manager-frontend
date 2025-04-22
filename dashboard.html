@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Wallet Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 h-screen flex flex-col items-center">
+
+    <div class="bg-white p-8 rounded-lg shadow-lg w-96 mt-8">
+        <h2 class="text-2xl font-bold text-center mb-6">Dashboard</h2>
+        
+        <!-- Current Wallet Balance -->
+        <div id="wallet-info" class="mb-6">
+            <p class="text-xl font-medium">Loading your wallet...</p>
+        </div>
+
+        <!-- Buttons for Income and Expense -->
+        <div class="flex justify-between">
+            <button onclick="showIncomeForm()" class="w-48 bg-green-500 text-white py-2 rounded mt-4">Add Income</button>
+            <button onclick="showExpenseForm()" class="w-48 bg-red-500 text-white py-2 rounded mt-4">Add Expense</button>
+        </div>
+
+        <!-- Income Form (Initially Hidden) -->
+        <div id="income-form" class="hidden mt-6">
+            <h3 class="text-lg font-semibold mb-2">Add Income</h3>
+            <input id="income-amount" type="number" class="w-full p-2 mb-2 border rounded" placeholder="Amount" required />
+            <input id="income-category" type="text" class="w-full p-2 mb-2 border rounded" placeholder="Category" required />
+            <textarea id="income-note" class="w-full p-2 mb-2 border rounded" placeholder="Note" rows="3"></textarea>
+            <button onclick="addIncome()" class="w-full bg-green-500 text-white py-2 rounded mt-2">Submit Income</button>
+        </div>
+
+        <!-- Expense Form (Initially Hidden) -->
+        <div id="expense-form" class="hidden mt-6">
+            <h3 class="text-lg font-semibold mb-2">Add Expense</h3>
+            <input id="expense-amount" type="number" class="w-full p-2 mb-2 border rounded" placeholder="Amount" required />
+            <input id="expense-category" type="text" class="w-full p-2 mb-2 border rounded" placeholder="Category" required />
+            <textarea id="expense-note" class="w-full p-2 mb-2 border rounded" placeholder="Note" rows="3"></textarea>
+            <button onclick="addExpense()" class="w-full bg-red-500 text-white py-2 rounded mt-2">Submit Expense</button>
+        </div>
+
+        <!-- Logout Button -->
+        <button onclick="logout()" class="w-full bg-red-500 text-white py-2 rounded mt-4">Logout</button>
+    </div>
+
+    <script>
+        // Define the logout function
+        function logout() {
+            localStorage.removeItem('token');  // Remove token from localStorage
+            window.location.href = '/login.html';  // Redirect to login page
+        }
+
+        // Function to fetch dashboard data (wallet balance)
+        async function fetchDashboardData() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = '/login.html';  // Redirect to login if no token
+                return;
+            }
+
+            const response = await fetch('https://money-manager-api-three.vercel.app/api/user', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                document.getElementById('wallet-info').innerHTML = `
+                    <p class="text-xl font-medium">Current Balance: $${data.wallet}</p>
+                `;
+            } else {
+                alert('Error fetching wallet data');
+            }
+        }
+
+        // Call fetchDashboardData when the page loads
+        fetchDashboardData();
+
+        // Show Income Form
+        function showIncomeForm() {
+            document.getElementById('income-form').classList.remove('hidden');
+            document.getElementById('expense-form').classList.add('hidden');
+        }
+
+        // Show Expense Form
+        function showExpenseForm() {
+            document.getElementById('expense-form').classList.remove('hidden');
+            document.getElementById('income-form').classList.add('hidden');
+        }
+
+        // Add Income function
+        async function addIncome() {
+            const token = localStorage.getItem('token');
+            const amount = document.getElementById('income-amount').value;
+            const category = document.getElementById('income-category').value;
+            const note = document.getElementById('income-note').value;
+
+            if (!amount || !category) {
+                alert('Please provide amount and category.');
+                return;
+            }
+
+            const response = await fetch('https://money-manager-api-three.vercel.app/api/transactions/income', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify({ amount, category, note }),
+            });
+
+            if (response.ok) {
+                alert('Income added successfully!');
+                fetchDashboardData();  // Refresh dashboard balance
+                document.getElementById('income-form').classList.add('hidden');  // Hide income form
+            } else {
+                alert('Error adding income');
+            }
+        }
+
+        // Add Expense function
+        async function addExpense() {
+            const token = localStorage.getItem('token');
+            const amount = document.getElementById('expense-amount').value;
+            const category = document.getElementById('expense-category').value;
+            const note = document.getElementById('expense-note').value;
+
+            if (!amount || !category) {
+                alert('Please provide amount and category.');
+                return;
+            }
+
+            const response = await fetch('https://money-manager-api-three.vercel.app/api/transactions/expense', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify({ amount, category, note }),
+            });
+
+            if (response.ok) {
+                alert('Expense added successfully!');
+                fetchDashboardData();  // Refresh dashboard balance
+                document.getElementById('expense-form').classList.add('hidden');  // Hide expense form
+            } else {
+                alert('Error adding expense');
+            }
+        }
+    </script>
+</body>
+</html>
