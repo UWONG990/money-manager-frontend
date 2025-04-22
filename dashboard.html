@@ -69,7 +69,7 @@
             if (response.ok) {
                 const data = await response.json();
                 document.getElementById('wallet-info').innerHTML = `
-                    <p class="text-xl font-medium">Current Balance: $${data.wallet}</p>
+                    <p class="text-xl font-medium">Current Balance: Rp${data.wallet}</p>
                 `;
             } else {
                 alert('Error fetching wallet data');
@@ -109,7 +109,7 @@
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,
                 },
-                body: JSON.stringify({ amount, category, note }),
+                body: JSON.stringify({ amount: parseFloat(amount), category, note }),
             });
 
             if (response.ok) {
@@ -139,7 +139,7 @@
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,
                 },
-                body: JSON.stringify({ amount, category, note }),
+                body: JSON.stringify({ amount: parseFloat(amount), category, note }),
             });
 
             if (response.ok) {
