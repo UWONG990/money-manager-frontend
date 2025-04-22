@@ -167,28 +167,31 @@
         }
 
         async function convertCurrency() {
-            const amountIDR = prompt("Enter the amount in IDR to convert:");
+            const amountIDR = document.getElementById('convert-amount').value;
+            const targetCurrency = document.getElementById('convert-to').value;
+            const resultDisplay = document.getElementById('conversion-result');
+
             if (!amountIDR || isNaN(amountIDR)) {
-                alert("Please enter a valid number.");
+                resultDisplay.textContent = "Please enter a valid number.";
                 return;
             }
 
-            const accessKey = "YOUR_ACCESS_KEY"; // Replace with your actual key
+            const accessKey = "142e069ac8c42667964066a6db690a5d";
 
             try {
-                const response = await fetch(`https://api.exchangeratesapi.io/v1/convert?access_key=${"142e069ac8c42667964066a6db690a5d"}&from=IDR&to=USD&amount=${amountIDR}`);
+                const response = await fetch(`https://api.exchangeratesapi.io/v1/convert?access_key=${accessKey}&from=IDR&to=${targetCurrency}&amount=${amountIDR}`);
                 const data = await response.json();
 
                 if (!data.success) {
-                    alert(`Currency conversion failed: ${data.error.info}`);
+                    resultDisplay.textContent = `Conversion failed: ${data.error.info}`;
                     return;
                 }
 
                 const convertedAmount = data.result;
-                alert(`${amountIDR} IDR is approximately ${convertedAmount.toFixed(2)} USD`);
+                resultDisplay.textContent = `${amountIDR} IDR ≈ ${convertedAmount.toFixed(2)} ${targetCurrency}`;
             } catch (error) {
-                console.error("Error converting currency:", error);
-                alert("Failed to fetch conversion data.");
+                console.error("Conversion error:", error);
+                resultDisplay.textContent = "Failed to fetch conversion data.";
             }
         }
     </script>
