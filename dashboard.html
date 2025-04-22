@@ -167,33 +167,28 @@
         }
 
         async function convertCurrency() {
-            const rawAmount = document.getElementById('convert-amount').value;
-            const to = document.getElementById('convert-to').value;
-            const amount = parseFloat(rawAmount);
-
-            if (isNaN(amount)) {
-                alert('Please enter a valid number for amount.');
+            const amountIDR = prompt("Enter the amount in IDR to convert:");
+            if (!amountIDR || isNaN(amountIDR)) {
+                alert("Please enter a valid number.");
                 return;
             }
 
+            const accessKey = "YOUR_ACCESS_KEY"; // Replace with your actual key
+
             try {
-                const url = `https://api.exchangerate.host/convert?from=IDR&to=${to}&amount=${amount}`;
-                const response = await fetch(url);
+                const response = await fetch(`https://api.exchangeratesapi.io/v1/convert?access_key=${"142e069ac8c42667964066a6db690a5d"}&from=IDR&to=USD&amount=${amountIDR}`);
                 const data = await response.json();
 
-                console.log("Full API response:", data); // <-- Key for debugging
-
-                if (!data || typeof data.result !== 'number') {
-                    alert("Invalid conversion data received.");
+                if (!data.success) {
+                    alert(`Currency conversion failed: ${data.error.info}`);
                     return;
                 }
 
-                const converted = data.result.toFixed(2);
-                document.getElementById('conversion-result').innerText =
-                    `Rp${amount.toLocaleString()} = ${converted} ${to}`;
-            } catch (err) {
-                console.error("Fetch error:", err);
-                alert("Conversion failed.");
+                const convertedAmount = data.result;
+                alert(`${amountIDR} IDR is approximately ${convertedAmount.toFixed(2)} USD`);
+            } catch (error) {
+                console.error("Error converting currency:", error);
+                alert("Failed to fetch conversion data.");
             }
         }
     </script>
