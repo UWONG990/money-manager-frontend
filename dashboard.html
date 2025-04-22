@@ -18,8 +18,8 @@
 
         <!-- Buttons for Income and Expense -->
         <div class="flex justify-between">
-            <button onclick="showIncomeForm()" class="w-48 bg-green-500 text-white py-2 rounded mt-4">Add Income</button>
-            <button onclick="showExpenseForm()" class="w-48 bg-red-500 text-white py-2 rounded mt-4">Add Expense</button>
+            <button onclick="showIncomeForm()" class="w-48 bg-green-500 text-white py-2 rounded mt-4 px-4">Add Income</button>
+            <button onclick="showExpenseForm()" class="w-48 bg-red-500 text-white py-2 rounded mt-4 px-4">Add Expense</button>
         </div>
 
         <!-- Income Form (Initially Hidden) -->
@@ -48,7 +48,7 @@
         // Define the logout function
         function logout() {
             localStorage.removeItem('token');  // Remove token from localStorage
-            window.location.href = '/index.html';  // Redirect to login page
+            window.location.href = 'https://uwong990.github.io/money-manager-frontend/index.html';  // Redirect to login page
         }
 
         // Function to fetch dashboard data (wallet balance)
