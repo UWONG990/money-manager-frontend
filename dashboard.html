@@ -40,6 +40,21 @@
             <button onclick="addExpense()" class="w-full bg-red-500 text-white py-2 rounded mt-2">Submit Expense</button>
         </div>
 
+        <div class="mt-6 w-full">
+            <h3 class="text-lg font-semibold mb-2">Convert Currency</h3>
+            <div class="flex gap-2 mb-2">
+                <input id="convert-amount" type="number" class="flex-1 p-2 border rounded" placeholder="Amount in IDR" />
+                <select id="convert-to" class="p-2 border rounded">
+                    <option value="USD">USD</option>
+                    <option value="EUR">EUR</option>
+                    <option value="JPY">JPY</option>
+                </select>
+            </div>
+            <button onclick="convertCurrency()" class="w-full bg-blue-500 text-white py-2 rounded">Convert</button>
+            <p id="conversion-result" class="mt-2 text-center font-medium text-blue-600"></p>
+        </div>
+        
+
         <!-- Logout Button -->
         <button onclick="logout()" class="w-full bg-red-500 text-white py-2 rounded mt-4">Logout</button>
     </div>
@@ -150,6 +165,27 @@
                 alert('Error adding expense');
             }
         }
+
+        async function convertCurrency() {
+            const amount = document.getElementById('convert-amount').value;
+            const to = document.getElementById('convert-to').value;
+
+            if (!amount || isNaN(amount)) {
+                alert('Please enter a valid amount in IDR.');
+                return;
+            }
+
+            try {
+                const res = await fetch(`https://api.exchangerate.host/convert?from=IDR&to=${to}&amount=${amount}`);
+                const data = await res.json();
+
+                document.getElementById('conversion-result').innerText = 
+                    `Rp${amount} = ${data.result.toFixed(2)} ${to}`;
+            } catch (error) {
+                alert("Failed to fetch conversion rate.");
+                console.error(error);
+            }
+    }
     </script>
 </body>
 </html>
